@@ -1,4 +1,3 @@
-// ---------- Setup ----------
 const socket = io();
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
@@ -20,22 +19,18 @@ const countEl = document.getElementById("count");
 let myColor = "#ff4d4d";
 let erasing = false;
 
-// Initialize color display
 colorDisplay.style.background = myColor;
 
-// Update size value display
 sizeEl.addEventListener("input", () => {
   sizeValue.textContent = sizeEl.value;
 });
 
-// Color picker
 colorDisplay.addEventListener("click", () => colorEl.click());
 colorEl.addEventListener("input", () => {
   myColor = colorEl.value;
   colorDisplay.style.background = myColor;
 });
 
-// Resize canvas
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -49,9 +44,8 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-// ---------- Local Drawing State ----------
 let isDown = false;
-let points = []; // current stroke points
+let points = []; 
 
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
@@ -87,7 +81,7 @@ function replay(allOps) {
   for (const op of allOps) drawStroke(op);
 }
 
-// ---------- Mouse / touch events ----------
+
 function start(e) {
   isDown = true;
   points = [getPos(e)];
@@ -103,7 +97,7 @@ function move(e) {
   }
   const p = getPos(e);
   const prev = points[points.length - 1];
-  // Ignore tiny jitter (improves line quality)
+
   if (Math.hypot(p.x - prev.x, p.y - prev.y) < 0.5) return;
 
   points.push(p);
@@ -137,7 +131,7 @@ canvas.addEventListener("touchstart", start, { passive: false });
 canvas.addEventListener("touchmove", move, { passive: false });
 window.addEventListener("touchend", end);
 
-// ---------- Toolbar ----------
+
 penBtn.addEventListener("click", () => {
   erasing = false;
   penBtn.classList.add("active");
@@ -158,7 +152,6 @@ clearBtn.addEventListener("click", () => {
   }
 });
 
-// User list toggle
 usersBtn.addEventListener("click", () => {
   userList.style.display = userList.style.display === "none" ? "block" : "none";
 });
@@ -167,15 +160,13 @@ closeUserList.addEventListener("click", () => {
   userList.style.display = "none";
 });
 
-// Close user list when clicking outside
 document.addEventListener("click", (e) => {
   if (!usersBtn.contains(e.target) && !userList.contains(e.target)) {
     userList.style.display = "none";
   }
 });
 
-// ---------- Live Cursors ----------
-const cursors = new Map(); // id -> {el, label}
+const cursors = new Map(); 
 
 function ensureCursor(id, color, name) {
   if (cursors.has(id)) return cursors.get(id).el;
@@ -194,11 +185,10 @@ function ensureCursor(id, color, name) {
 function moveCursor({ id, x, y, color, name, isDrawing }) {
   const el = ensureCursor(id, color, name);
   el.style.left = `${x}px`;
-  el.style.top = `${y + 54}px`; // account for header
+  el.style.top = `${y + 54}px`; 
   el.style.opacity = x < 0 ? "0" : "1";
 }
 
-// ---------- Sockets ----------
 socket.on("connect", () => {
   showToast("Connected to server", "success");
 });
@@ -218,12 +208,10 @@ socket.on("reset", (allOps) => {
 socket.on("cursor", moveCursor);
 
 socket.on("users:list", (list) => {
-  // Update count and sidebar
   countEl.textContent = list.length.toString();
   userListContent.innerHTML = "";
   
   for (const u of list) {
-    // my color becomes assigned color after /init
     if (u.id === socket.id) colorEl.value = myColor = u.color;
     
     const row = document.createElement("div");
@@ -239,7 +227,6 @@ socket.on("users:list", (list) => {
   colorDisplay.style.background = myColor;
 });
 
-// Keyboard shortcuts
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey || e.metaKey) {
     if (e.key === "z") {
@@ -251,13 +238,11 @@ document.addEventListener("keydown", (e) => {
     }
   }
   
-  // Toggle eraser with 'E' key
   if (e.key === "e" || e.key === "E") {
     eraserBtn.click();
   }
 });
 
-// Toast notification system
 function showToast(message, type = "success") {
   const container = document.getElementById("toastContainer");
   const toast = document.createElement("div");
