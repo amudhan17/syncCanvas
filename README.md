@@ -33,6 +33,7 @@ syncCanvas/
 │ ├── index.html
 │ ├── style.css
 │ └── main.js
+|
 └── server/
 └── server.js
 
