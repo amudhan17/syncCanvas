@@ -6,9 +6,7 @@ When one person draws, everyone else sees what they are drawing live. It is easy
 
 ## Live Demo
 
-https://YOUR-RENDER-LINK-HERE  
-(Replace this with your actual deployed link)
-
+https://synccanvas.onrender.com/
 
 ## Features
 
@@ -37,10 +35,6 @@ syncCanvas/
 │ └── main.js
 └── server/
 └── server.js
-
-## Live Demo
-
-https://synccanvas.onrender.com
 
 ## How to Run Locally
 
